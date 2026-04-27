@@ -1,11 +1,90 @@
 <!doctype html>
 <html lang="pl">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Document</title>
-	</head>
-	<body>
-		<h2>Nieoficjalna strona fanów Cybeprunk Trading Card Game</h2>
-	</body>
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>CTCG – STRONA GŁÓWNA</title>
+	<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap"
+		rel="stylesheet" />
+	<style>
+		:root {
+			--neon-yellow: #f5e642;
+			--neon-cyan: #00f5ff;
+			--neon-pink: #ff2d78;
+			--neon-red: #eb1233;
+			--dark: #050810;
+			--dark2: #0a0f1e;
+			--panel: #0d1424cc;
+			--border: #1e2d4a;
+		}
+
+		body {
+			background-color: #031325;
+		}
+
+		:is(h1, h2, h3, h4, h5, h6) {
+			font-family: "Orbitron", sans-serif;
+			text-align: center;
+			color: var(--neon-cyan);
+			text-shadow: 0 0 5px #00f7ff6e;
+		}
+
+		a> :is(h1, h2, h3, h4, h5, h6) {
+			text-decoration: underline 2px var(--neon-cyan);
+		}
+
+		a:visited> :is(h1, h2, h3, h4, h5, h6) {
+			text-decoration: underline 2px #005f63;
+		}
+
+		.warning {
+			padding: 10px 2px;
+			min-width: 300px;
+			max-width: 500px;
+			border: solid 5px var(--neon-red);
+			background-color: #4e0c0ca8;
+			box-shadow:
+				0 0 24px #b60f0fd0,
+				0 0 60px #f5e64210,
+				inset 0 0 20px #86111140,
+				inset 0 0 10px #b9151580;
+			margin: auto;
+		}
+
+		.warning>* {
+			color: var(--neon-red);
+			text-shadow: 0 0 8px #eb123375;
+		}
+
+		ul {
+			list-style-type: none;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="warning">
+		<h1>Strona w budowie</h1>
+	</div>
+	<h2>Linki:</h2>
+	<ul>
+		<li>
+			<a href="mapa">
+				<h3>Mapa sklepów [WIP]</h3>
+			</a>
+		</li>
+		<li>
+			<a href="https://cyberpunk-tcg-sim.online/">
+				<h3>Nieoficjalny symulator</h3>
+			</a>
+		</li>
+		<li>
+			<a href=" https://drive.google.com/file/d/1eG_VLK_qT9z_kPaOmSe-P8ZnUXuanOJY/view">
+				<h3>Przewodnik (zasady) po polsku</h3>
+			</a>
+		</li>
+		</ol>
+</body>
+
 </html>
