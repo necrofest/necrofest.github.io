@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="pl">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>CP77 TCG – Mapa Sklepów</title>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"
+		/>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap"
+			rel="stylesheet"
+		/>
+		<style>
+			:root {
+				--neon-yellow: #f5e642;
+				--neon-cyan: #00f5ff;
+				--neon-pink: #ff2d78;
+				--dark: #050810;
+				--dark2: #0a0f1e;
+				--panel: #0d1424cc;
+				--border: #1e2d4a;
+			}
+
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				background: var(--dark);
+				font-family: "Share Tech Mono", monospace;
+				color: #cdd6f4;
+				height: 100vh;
+				display: flex;
+				flex-direction: column;
+				overflow: hidden;
+			}
+
+			/* ── HEADER ── */
+			header {
+				position: relative;
+				z-index: 1000;
+				background: var(--dark2);
+				border-bottom: 1px solid var(--neon-yellow);
+				padding: 10px 24px;
+				display: flex;
+				align-items: center;
+				gap: 16px;
+				box-shadow: 0 0 24px #f5e64240;
+			}
+
+			.logo-box {
+				display: flex;
+				align-items: baseline;
+				gap: 8px;
+			}
+
+			.logo-cp {
+				font-family: "Orbitron", sans-serif;
+				font-weight: 900;
+				font-size: 1.5rem;
+				color: var(--neon-yellow);
+				text-shadow: 0 0 12px #f5e64280;
+				letter-spacing: 2px;
+			}
+
+			.logo-tcg {
+				font-family: "Orbitron", sans-serif;
+				font-weight: 400;
+				font-size: 0.85rem;
+				color: var(--neon-cyan);
+				letter-spacing: 4px;
+				text-shadow: 0 0 8px #00f5ff80;
+			}
+
+			.header-sub {
+				font-size: 0.7rem;
+				color: #6e7a9a;
+				letter-spacing: 2px;
+				margin-left: auto;
+			}
+
+			.store-count {
+				font-family: "Orbitron", sans-serif;
+				font-size: 0.75rem;
+				color: var(--neon-pink);
+				text-shadow: 0 0 8px #ff2d7880;
+				letter-spacing: 1px;
+			}
+
+			/* ── SCAN LINE OVERLAY ── */
+			body::after {
+				content: "";
+				position: fixed;
+				inset: 0;
+				background: repeating-linear-gradient(
+					0deg,
+					transparent,
+					transparent 2px,
+					rgba(0, 0, 0, 0.04) 2px,
+					rgba(0, 0, 0, 0.04) 4px
+				);
+				pointer-events: none;
+				z-index: 9999;
+			}
+
+			/* ── MAP ── */
+			#map {
+				flex: 1;
+				width: 100%;
+				background: #050810;
+			}
+
+			/* Leaflet tile filter for dark theme */
+			.leaflet-layer,
+			.leaflet-control-zoom-in,
+			.leaflet-control-zoom-out,
+			.leaflet-control-attribution {
+				filter: invert(1) hue-rotate(180deg) brightness(0.85)
+					saturate(0.6);
+			}
+
+			.leaflet-control-zoom {
+				border: 1px solid var(--neon-yellow) !important;
+				box-shadow: 0 0 12px #f5e64240 !important;
+			}
+
+			.leaflet-control-zoom-in,
+			.leaflet-control-zoom-out {
+				filter: none !important;
+				background: var(--dark2) !important;
+				color: var(--neon-yellow) !important;
+				font-family: "Orbitron", sans-serif !important;
+				border-bottom: 1px solid var(--border) !important;
+			}
+
+			.leaflet-control-zoom-in:hover,
+			.leaflet-control-zoom-out:hover {
+				background: #1a2238 !important;
+				color: var(--neon-cyan) !important;
+			}
+
+			.leaflet-control-attribution {
+				filter: none !important;
+				background: #050810cc !important;
+				color: #3a4a6a !important;
+				font-size: 0.6rem !important;
+			}
+
+			.leaflet-control-attribution a {
+				color: #4a5a7a !important;
+			}
+
+			/* ── POPUP ── */
+			.leaflet-popup-content-wrapper {
+				background: var(--dark2) !important;
+				border: 1px solid var(--neon-yellow) !important;
+				border-radius: 0 !important;
+				box-shadow:
+					0 0 24px #f5e64240,
+					0 0 60px #f5e64210 !important;
+				padding: 0 !important;
+				clip-path: polygon(
+					0 0,
+					calc(100% - 12px) 0,
+					100% 12px,
+					100% 100%,
+					12px 100%,
+					0 calc(100% - 12px)
+				);
+			}
+
+			.leaflet-popup-tip-container {
+				display: none;
+			}
+
+			.leaflet-popup-close-button {
+				color: var(--neon-yellow) !important;
+				font-size: 1rem !important;
+				top: 8px !important;
+				right: 10px !important;
+			}
+
+			.leaflet-popup-close-button:hover {
+				color: var(--neon-pink) !important;
+			}
+
+			.popup-inner {
+				padding: 16px 20px 14px;
+				min-width: 220px;
+			}
+
+			.popup-tag {
+				font-size: 0.6rem;
+				letter-spacing: 3px;
+				color: var(--neon-cyan);
+				text-shadow: 0 0 6px #00f5ff80;
+				margin-bottom: 6px;
+			}
+
+			.popup-name {
+				font-family: "Orbitron", sans-serif;
+				font-weight: 700;
+				font-size: 1rem;
+				color: var(--neon-yellow);
+				text-shadow: 0 0 8px #f5e64260;
+				line-height: 1.3;
+				margin-bottom: 8px;
+			}
+
+			.popup-divider {
+				height: 1px;
+				background: linear-gradient(
+					90deg,
+					var(--neon-yellow),
+					transparent
+				);
+				margin-bottom: 8px;
+				opacity: 0.4;
+			}
+
+			.popup-address {
+				font-size: 0.75rem;
+				color: #8a9abf;
+				line-height: 1.6;
+			}
+
+			.popup-address strong {
+				color: #aabbd4;
+				display: block;
+				margin-bottom: 2px;
+			}
+
+			/* ── CUSTOM MARKER ── */
+			.custom-marker {
+				width: 32px;
+				height: 40px;
+				position: relative;
+				cursor: pointer;
+			}
+
+			.marker-svg {
+				width: 100%;
+				height: 100%;
+				filter: drop-shadow(0 0 6px #f5e64299)
+					drop-shadow(0 0 12px #f5e64255);
+				transition: filter 0.2s;
+			}
+
+			.custom-marker:hover .marker-svg {
+				filter: drop-shadow(0 0 10px #f5e642cc)
+					drop-shadow(0 0 20px #f5e64288);
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<div class="logo-box">
+				<span class="logo-cp">CP77</span>
+				<span class="logo-tcg">TCG</span>
+			</div>
+			<div style="display: flex; flex-direction: column; gap: 2px">
+				<div
+					style="
+						font-size: 0.65rem;
+						color: #6e7a9a;
+						letter-spacing: 2px;
+					"
+				>
+					MAPA SKLEPÓW
+				</div>
+				<div class="store-count" id="store-count"></div>
+			</div>
+			<div class="header-sub">NIGHT CITY CARD NETWORK //</div>
+		</header>
+
+		<div id="map"></div>
+
+		<script>
+			// ╔══════════════════════════════════════════════════════╗
+			// ║         DODAJ SWOJE SKLEPY TUTAJ                    ║
+			// ║                                                      ║
+			// ║  Każdy sklep to obiekt z polami:                    ║
+			// ║    name    – nazwa sklepu                           ║
+			// ║    address – adres (wyświetlany w popup)            ║
+			// ║    lat     – szerokość geograficzna                 ║
+			// ║    lng     – długość geograficzna                   ║
+			// ║                                                      ║
+			// ║  Współrzędne znajdziesz np. na Google Maps          ║
+			// ║  (klik prawym na mapie → "Co tu jest?")             ║
+			// ╚══════════════════════════════════════════════════════╝
+
+			const sklepy = [
+				{
+					name: "Przykładowy Sklep Kraków",
+					address: "ul. Floriańska 1\n31-019 Kraków",
+					lat: 50.0614,
+					lng: 19.9366,
+				},
+				{
+					name: "Przykładowy Sklep Warszawa",
+					address: "ul. Nowy Świat 22\n00-373 Warszawa",
+					lat: 52.2297,
+					lng: 21.0122,
+				},
+				// ← dodaj kolejne sklepy tutaj, wzorując się na powyższych
+			];
+
+			// ── MAPA ──
+			const map = L.map("map", {
+				center: [52.0, 19.5],
+				zoom: 6,
+				zoomControl: true,
+			});
+
+			L.tileLayer(
+				"https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+				{
+					attribution:
+						'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+					maxZoom: 19,
+				},
+			).addTo(map);
+
+			// ── IKONA MARKERA (SVG w stylu cyberpunk) ──
+			function createIcon() {
+				const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 40">
+        <polygon points="16,38 4,20 4,10 16,2 28,10 28,20" fill="#0a0f1e" stroke="#f5e642" stroke-width="1.5"/>
+        <polygon points="16,34 6,19 6,11 16,5 26,11 26,19" fill="#f5e642" opacity="0.08"/>
+        <circle cx="16" cy="17" r="5" fill="none" stroke="#f5e642" stroke-width="1.5"/>
+        <circle cx="16" cy="17" r="2" fill="#f5e642"/>
+        <line x1="16" y1="12" x2="16" y2="9" stroke="#f5e642" stroke-width="1"/>
+        <line x1="16" y1="22" x2="16" y2="25" stroke="#f5e642" stroke-width="1"/>
+        <line x1="11" y1="17" x2="8" y2="17" stroke="#f5e642" stroke-width="1"/>
+        <line x1="21" y1="17" x2="24" y2="17" stroke="#f5e642" stroke-width="1"/>
+      </svg>
+    `;
+				return L.divIcon({
+					html: `<div class="custom-marker"><div class="marker-svg">${svg}</div></div>`,
+					iconSize: [32, 40],
+					iconAnchor: [16, 38],
+					popupAnchor: [0, -38],
+					className: "",
+				});
+			}
+
+			const icon = createIcon();
+
+			// ── DODAJ MARKERY ──
+			sklepy.forEach((s) => {
+				const formattedAddress = s.address.replace(/\n/g, "<br>");
+				const popup = `
+      <div class="popup-inner">
+        <div class="popup-tag">// SKLEP TCG</div>
+        <div class="popup-name">${s.name}</div>
+        <div class="popup-divider"></div>
+        <div class="popup-address">
+          <strong>ADRES</strong>
+          ${formattedAddress}
+        </div>
+      </div>
+    `;
+				L.marker([s.lat, s.lng], { icon })
+					.addTo(map)
+					.bindPopup(popup, { maxWidth: 280 });
+			});
+
+			// ── LICZNIK SKLEPÓW ──
+			document.getElementById("store-count").textContent =
+				sklepy.length +
+				(sklepy.length === 1 ? " LOKALIZACJA" : " LOKALIZACJE");
+		</script>
+	</body>
+</html>
