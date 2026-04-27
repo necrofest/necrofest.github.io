@@ -59,22 +59,9 @@
 				gap: 8px;
 			}
 
-			.logo-cp {
-				font-family: "Orbitron", sans-serif;
-				font-weight: 900;
-				font-size: 1.5rem;
-				color: var(--neon-yellow);
-				text-shadow: 0 0 12px #f5e64280;
-				letter-spacing: 2px;
-			}
-
-			.logo-tcg {
-				font-family: "Orbitron", sans-serif;
-				font-weight: 400;
-				font-size: 0.85rem;
-				color: var(--neon-cyan);
-				letter-spacing: 4px;
-				text-shadow: 0 0 8px #00f5ff80;
+			.logo-image {
+				height: 36px;
+				width: auto;
 			}
 
 			.header-sub {
@@ -260,8 +247,7 @@
 	<body>
 		<header>
 			<div class="logo-box">
-				<span class="logo-cp">CP77</span>
-				<span class="logo-tcg">TCG</span>
+				<img src="logo.webp" alt="" class="logo-image" />
 			</div>
 			<div style="display: flex; flex-direction: column; gap: 2px">
 				<div
@@ -318,7 +304,7 @@
 			});
 
 			L.tileLayer(
-				"https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+				"https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
 				{
 					attribution:
 						'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
