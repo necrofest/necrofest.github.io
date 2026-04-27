@@ -51,6 +51,7 @@
 				align-items: center;
 				gap: 16px;
 				box-shadow: 0 0 24px #f5e64240;
+				height: clamp(48px, 8vh, 64px);
 			}
 
 			.logo-box {
@@ -59,9 +60,11 @@
 				gap: 8px;
 			}
 
-			.logo-image {
-				height: 36px;
+			.logo-img {
+				height: 100%;
+				max-height: 50px;
 				width: auto;
+				margin: 5px 5px;
 			}
 
 			.header-sub {
@@ -73,7 +76,7 @@
 
 			.store-count {
 				font-family: "Orbitron", sans-serif;
-				font-size: 0.75rem;
+				font-size: 0.8rem;
 				color: var(--neon-pink);
 				text-shadow: 0 0 8px #ff2d7880;
 				letter-spacing: 1px;
@@ -233,26 +236,27 @@
 			.marker-svg {
 				width: 100%;
 				height: 100%;
-				filter: drop-shadow(0 0 6px #f5e64299)
-					drop-shadow(0 0 12px #f5e64255);
-				transition: filter 0.2s;
+				filter: drop-shadow(0 0 5px #f5e64299)
+					drop-shadow(0 0 10px #f5e64255);
 			}
-
-			.custom-marker:hover .marker-svg {
-				filter: drop-shadow(0 0 10px #f5e642cc)
-					drop-shadow(0 0 20px #f5e64288);
+			.custom-marker:hover .marker-svg,
+			.marker-active .marker-svg {
+				filter: drop-shadow(0 0 6px #00f5ffcc)
+					drop-shadow(0 0 12px #00f5ff88) sepia(1) saturate(10)
+					hue-rotate(160deg);
+				transition: filter 0.2s;
 			}
 		</style>
 	</head>
 	<body>
 		<header>
 			<div class="logo-box">
-				<img src="logo.webp" alt="" class="logo-image" />
+				<img src="logo.webp" alt="" class="logo-img" />
 			</div>
 			<div style="display: flex; flex-direction: column; gap: 2px">
 				<div
 					style="
-						font-size: 0.65rem;
+						font-size: 0.7rem;
 						color: #6e7a9a;
 						letter-spacing: 2px;
 					"
@@ -267,18 +271,7 @@
 		<div id="map"></div>
 
 		<script>
-			// ╔══════════════════════════════════════════════════════╗
-			// ║         DODAJ SWOJE SKLEPY TUTAJ                    ║
-			// ║                                                      ║
-			// ║  Każdy sklep to obiekt z polami:                    ║
-			// ║    name    – nazwa sklepu                           ║
-			// ║    address – adres (wyświetlany w popup)            ║
-			// ║    lat     – szerokość geograficzna                 ║
-			// ║    lng     – długość geograficzna                   ║
-			// ║                                                      ║
-			// ║  Współrzędne znajdziesz np. na Google Maps          ║
-			// ║  (klik prawym na mapie → "Co tu jest?")             ║
-			// ╚══════════════════════════════════════════════════════╝
+			//lista wszystkich sklepów
 
 			const sklepy = [
 				{
@@ -351,9 +344,16 @@
         </div>
       </div>
     `;
-				L.marker([s.lat, s.lng], { icon })
+				const marker = L.marker([s.lat, s.lng], { icon })
 					.addTo(map)
 					.bindPopup(popup, { maxWidth: 280 });
+
+				marker.on("popupopen", () => {
+					marker.getElement().classList.add("marker-active");
+				});
+				marker.on("popupclose", () => {
+					marker.getElement().classList.remove("marker-active");
+				});
 			});
 
 			// ── LICZNIK SKLEPÓW ──
