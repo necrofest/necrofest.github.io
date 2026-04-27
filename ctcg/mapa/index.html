@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>CP77 TCG – Mapa Sklepów</title>
+		<title>CTCG – Mapa Sklepów</title>
 		<link
 			rel="stylesheet"
 			href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"
@@ -143,6 +143,7 @@
 			}
 
 			/* ── POPUP ── */
+			/* OLD POPUP */
 			.leaflet-popup-content-wrapper {
 				background: var(--dark2) !important;
 				border: 1px solid var(--neon-yellow) !important;
@@ -151,16 +152,15 @@
 					0 0 24px #f5e64240,
 					0 0 60px #f5e64210 !important;
 				padding: 0 !important;
-				clip-path: polygon(
+				/*clip-path: polygon(
 					0 0,
 					calc(100% - 12px) 0,
 					100% 12px,
 					100% 100%,
 					12px 100%,
 					0 calc(100% - 12px)
-				);
+				);*/
 			}
-
 			.leaflet-popup-tip-container {
 				display: none;
 			}
@@ -261,7 +261,7 @@
 				</div>
 				<div class="store-count" id="store-count"></div>
 			</div>
-			<div class="header-sub">NIGHT CITY CARD NETWORK //</div>
+			<div class="header-sub">POLSKIE COMMUNITY CYBERPUNK TCG //</div>
 		</header>
 
 		<div id="map"></div>
@@ -299,7 +299,7 @@
 			// ── MAPA ──
 			const map = L.map("map", {
 				center: [52.0, 19.5],
-				zoom: 6,
+				zoom: 7,
 				zoomControl: true,
 			});
 
