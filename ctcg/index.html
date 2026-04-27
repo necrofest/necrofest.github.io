@@ -19,72 +19,365 @@
 			--border: #1e2d4a;
 		}
 
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
 		body {
 			background-color: #031325;
+			font-family: 'Share Tech Mono', monospace;
+			color: #cdd6f4;
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			padding: 40px 16px 60px;
+			overflow-x: hidden;
 		}
 
-		:is(h1, h2, h3, h4, h5, h6) {
-			font-family: "Orbitron", sans-serif;
-			text-align: center;
-			color: var(--neon-cyan);
-			text-shadow: 0 0 5px #00f7ff6e;
+		/* ── SCAN LINES ── */
+		body::after {
+			content: '';
+			position: fixed;
+			inset: 0;
+			background: repeating-linear-gradient(0deg, transparent, transparent 2px,
+					rgba(0, 0, 0, 0.04) 2px, rgba(0, 0, 0, 0.04) 4px);
+			pointer-events: none;
+			z-index: 9999;
 		}
 
-		a> :is(h1, h2, h3, h4, h5, h6) {
-			text-decoration: underline 2px var(--neon-cyan);
+		.page {
+			position: relative;
+			z-index: 1;
+			width: 100%;
+			max-width: 640px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 32px;
 		}
 
-		a:visited> :is(h1, h2, h3, h4, h5, h6) {
-			text-decoration: underline 2px #005f63;
+		.logo-box {
+			display: flex;
+			align-items: center;
+			gap: 16px;
+			animation: fadeDown 0.6s ease both;
 		}
 
+		.logo-img {
+			height: 64px;
+			width: auto;
+		}
+
+		.logo-text-box {
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+		}
+
+		.logo-main {
+			font-family: 'Orbitron', sans-serif;
+			font-weight: 900;
+			font-size: 1.8rem;
+			color: var(--neon-yellow);
+			text-shadow: 0 0 16px #f5e64270;
+			letter-spacing: 4px;
+			line-height: 1;
+		}
+
+		.logo-sub {
+			font-size: 0.65rem;
+			color: #6e7a9a;
+			letter-spacing: 3px;
+		}
+
+		/* ── WARNING ── */
 		.warning {
-			padding: 10px 2px;
-			min-width: 300px;
-			max-width: 500px;
-			border: solid 5px var(--neon-red);
+			width: 100%;
+			border: 2px solid var(--neon-red);
 			background-color: #4e0c0ca8;
 			box-shadow:
 				0 0 24px #b60f0fd0,
-				0 0 60px #f5e64210,
+				0 0 60px #eb123320,
 				inset 0 0 20px #86111140,
 				inset 0 0 10px #b9151580;
-			margin: auto;
+			padding: 16px 24px;
+			animation: fadeDown 0.6s ease 0.1s both;
 		}
 
-		.warning>* {
+		.warning-inner {
+			display: flex;
+			align-items: center;
+			gap: 16px;
+		}
+
+		.warning-icon {
+			font-size: 1.8rem;
+			flex-shrink: 0;
+			animation: pulse 2s ease-in-out infinite;
+			color: #ff2546;
+		}
+
+		.warning-text .tag {
+			font-size: 0.6rem;
+			letter-spacing: 4px;
+			color: #ff6b6b;
+			margin-bottom: 4px;
+		}
+
+		.warning-text h2 {
+			font-family: 'Orbitron', sans-serif;
+			font-size: 0.95rem;
 			color: var(--neon-red);
 			text-shadow: 0 0 8px #eb123375;
+			letter-spacing: 2px;
 		}
 
-		ul {
-			list-style-type: none;
+		/* ── DIVIDER ── */
+		.divider {
+			width: 100%;
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			animation: fadeDown 0.6s ease 0.2s both;
+		}
+
+		.divider::before,
+		.divider::after {
+			content: '';
+			flex: 1;
+			height: 1px;
+			background: linear-gradient(90deg, transparent, var(--neon-yellow), transparent);
+			opacity: 0.3;
+		}
+
+		.divider span {
+			font-size: 0.6rem;
+			letter-spacing: 4px;
+			color: #6e7a9a;
+			white-space: nowrap;
+		}
+
+		/* ── LINKS ── */
+		.links {
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			gap: 12px;
+			list-style: none;
+		}
+
+		.links li {
+			animation: fadeDown 0.5s ease both;
+		}
+
+		.links li:nth-child(1) {
+			animation-delay: 0.3s;
+		}
+
+		.links li:nth-child(2) {
+			animation-delay: 0.4s;
+		}
+
+		.links li:nth-child(3) {
+			animation-delay: 0.5s;
+		}
+
+		.links a {
+			display: flex;
+			align-items: center;
+			gap: 16px;
+			text-decoration: none;
+			background: var(--dark2);
+			border: 1px solid var(--border);
+			padding: 16px 20px;
+			transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+			position: relative;
+			overflow: hidden;
+		}
+
+		.links a::before {
+			content: '';
+			position: absolute;
+			left: 0;
+			top: 0;
+			bottom: 0;
+			width: 3px;
+			background: var(--neon-cyan);
+			box-shadow: 0 0 8px var(--neon-cyan);
+			opacity: 0;
+			transition: opacity 0.2s;
+		}
+
+		.links a:hover {
+			border-color: var(--neon-cyan);
+			background: #0d1a2e;
+			box-shadow: 0 0 20px #00f5ff20, inset 0 0 20px #00f5ff08;
+		}
+
+		.links a:hover::before {
+			opacity: 1;
+		}
+
+		.link-num {
+			font-family: 'Orbitron', sans-serif;
+			font-size: 0.65rem;
+			color: #2a3a4a;
+			min-width: 24px;
+			transition: color 0.2s;
+		}
+
+		.links a:hover .link-num {
+			color: var(--neon-cyan);
+		}
+
+		.link-content {
+			flex: 1;
+		}
+
+		.link-tag {
+			font-size: 0.55rem;
+			letter-spacing: 3px;
+			color: #3a4a5a;
+			margin-bottom: 4px;
+			transition: color 0.2s;
+		}
+
+		.links a:hover .link-tag {
+			color: #5a8a9a;
+		}
+
+		.link-name {
+			font-family: 'Orbitron', sans-serif;
+			font-size: 0.85rem;
+			color: #8ab4cf;
+			letter-spacing: 1px;
+			transition: color 0.2s, text-shadow 0.2s;
+		}
+
+		.links a:hover .link-name {
+			color: var(--neon-cyan);
+			text-shadow: 0 0 8px #00f5ff60;
+		}
+
+		.link-wip {
+			font-size: 0.55rem;
+			letter-spacing: 2px;
+			color: var(--neon-yellow);
+			text-shadow: 0 0 6px #f5e64280;
+			border: 1px solid #f5e64240;
+			padding: 2px 6px;
+			flex-shrink: 0;
+		}
+
+		.link-arrow {
+			color: #2a3a4a;
+			font-size: 0.8rem;
+			transition: color 0.2s, transform 0.2s;
+		}
+
+		.links a:hover .link-arrow {
+			color: var(--neon-cyan);
+			transform: translateX(4px);
+		}
+
+		/* ── FOOTER ── */
+		footer {
+			font-size: 0.6rem;
+			letter-spacing: 3px;
+			color: #1e2d4a;
+			text-align: center;
+			animation: fadeDown 0.6s ease 0.6s both;
+		}
+
+		@keyframes fadeDown {
+			from {
+				opacity: 0;
+				transform: translateY(-16px);
+			}
+
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		@keyframes pulse {
+
+			0%,
+			100% {
+				opacity: 1;
+			}
+
+			50% {
+				opacity: 0.5;
+			}
 		}
 	</style>
 </head>
 
 <body>
-	<div class="warning">
-		<h1>Strona w budowie</h1>
+	<div class="page">
+
+		<div class="logo-box">
+			<img src="mapa/logo.webp" alt="CTCG" class="logo-img" />
+			<div class="logo-text-box">
+				<div class="logo-main">CTCG</div>
+				<div class="logo-sub">CYBERPUNK TRADING CARD GAME // POLSKIE COMMUNITY</div>
+			</div>
+		</div>
+
+		<div class="warning">
+			<div class="warning-inner">
+				<div class="warning-icon">⚠</div>
+				<div class="warning-text">
+					<div class="tag">// STATUS</div>
+					<h2>Strona w budowie</h2>
+				</div>
+			</div>
+		</div>
+
+		<div class="divider"><span>NAWIGACJA</span></div>
+
+		<ul class="links">
+			<li>
+				<a href="mapa">
+					<span class="link-num">01</span>
+					<div class="link-content">
+						<div class="link-tag">// LOKALIZACJE</div>
+						<div class="link-name">Mapa sklepów</div>
+					</div>
+					<span class="link-wip">WIP</span>
+					<span class="link-arrow">→</span>
+				</a>
+			</li>
+			<li>
+				<a href="https://cyberpunk-tcg-sim.online/" target="_blank">
+					<span class="link-num">02</span>
+					<div class="link-content">
+						<div class="link-tag">// SYMULATOR</div>
+						<div class="link-name">Nieoficjalny symulator</div>
+					</div>
+					<span class="link-arrow">→</span>
+				</a>
+			</li>
+			<li>
+				<a href="https://drive.google.com/file/d/1eG_VLK_qT9z_kPaOmSe-P8ZnUXuanOJY/view" target="_blank">
+					<span class="link-num">03</span>
+					<div class="link-content">
+						<div class="link-tag">// DOKUMENTACJA</div>
+						<div class="link-name">Przewodnik po polsku</div>
+					</div>
+					<span class="link-arrow">→</span>
+				</a>
+			</li>
+		</ul>
+
+		<footer>CTCG // CYBERPUNK TRADING CARD GAME // NIEOFICJALNY FANSITE</footer>
+
 	</div>
-	<h2>Linki:</h2>
-	<ul>
-		<li>
-			<a href="mapa">
-				<h3>Mapa sklepów [WIP]</h3>
-			</a>
-		</li>
-		<li>
-			<a href="https://cyberpunk-tcg-sim.online/">
-				<h3>Nieoficjalny symulator</h3>
-			</a>
-		</li>
-		<li>
-			<a href=" https://drive.google.com/file/d/1eG_VLK_qT9z_kPaOmSe-P8ZnUXuanOJY/view">
-				<h3>Przewodnik (zasady) po polsku</h3>
-			</a>
-		</li>
-		</ol>
 </body>
 
 </html>
