@@ -49,6 +49,11 @@
 			box-shadow: 0 0 24px #f5e64240;
 			height: clamp(48px, 8vh, 64px);
 		}
+		header  button img{
+			background-color: #d6d6d6;
+			width: 30px;
+			height: 30px;
+		}
 
 		.logo-box {
 			display: flex;
@@ -100,10 +105,10 @@
 		}
 
 		/* Leaflet tile filter for dark theme */
-		.leaflet-layer,
-		.leaflet-control-zoom-in,
-		.leaflet-control-zoom-out,
-		.leaflet-control-attribution {
+		.dark-mode .leaflet-layer,
+		.dark-mode .leaflet-control-zoom-in,
+		.dark-mode .leaflet-control-zoom-out,
+		.dark-mode .leaflet-control-attribution {
 			filter: invert(1) hue-rotate(180deg) brightness(0.85) saturate(0.6);
 		}
 
@@ -254,6 +259,9 @@
 			</div>
 			<div class="store-count" id="store-count"></div>
 		</div>
+		<button id="theme-toggle" onclick="document.body.classList.toggle('dark-mode')">
+			<img src="Light-Dark-Mode--Streamline-Sharp.png" alt="">
+		</button>
 		<div class="header-sub">POLSKIE COMMUNITY CYBERPUNK TCG //</div>
 	</header>
 
@@ -267,7 +275,7 @@
 	});
  
 	L.tileLayer(
-		"https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+		"https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
 		{
 			attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 			maxZoom: 19,
