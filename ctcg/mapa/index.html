@@ -7,6 +7,9 @@
 	<title>CTCG – Mapa Sklepów</title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
 	<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
 	<link rel="stylesheet" href="../colors.css">
 	<link rel="stylesheet" href="../map_style.css">
@@ -74,6 +77,8 @@
 	const icon = createIcon();
  
 	function addMarkers(sklepy) {
+		const cluster = L.markerClusterGroup();
+
 		sklepy.forEach((s) => {
 			const popup = `
 			<div class="popup-inner">
@@ -85,18 +90,21 @@
 					${s.address}
 				</div>
 			</div>`;
- 
+
 			const marker = L.marker([s.lat, s.lon], { icon })
-				.addTo(map)
 				.bindPopup(popup, { maxWidth: 280 });
- 
+
 			marker.on("popupopen", () => marker.getElement().classList.add("marker-active"));
 			marker.on("popupclose", () => marker.getElement().classList.remove("marker-active"));
+
+			cluster.addLayer(marker);
 		});
- 
+
+		map.addLayer(cluster);
+
 		document.getElementById("store-count").textContent =
 			sklepy.length + (sklepy.length === 1 ? " LOKALIZACJA" : " LOKALIZACJE");
-	}
+}
  
 	fetch("https://grid.arasaka.pl/getShops")
 		.then(r => r.json())
