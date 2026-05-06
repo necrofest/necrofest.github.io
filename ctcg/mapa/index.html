@@ -75,43 +75,74 @@
 	}
  
 	const icon = createIcon();
- 
-	function addMarkers(sklepy) {
-		const cluster = L.markerClusterGroup();
+let cluster;
+const markersById = new Map();
 
-		sklepy.forEach((s) => {
-			const popup = `
-			<div class="popup-inner">
-				<div class="popup-tag">// SKLEP TCG</div>
-				<div class="popup-name">${s.name}</div>
-				<div class="popup-divider"></div>
-				<div class="popup-address">
-					<strong>ADRES</strong>
-					${s.address}
-				</div>
-			</div>`;
+function addMarkers(sklepy) {
+	cluster = L.markerClusterGroup();
 
-			const marker = L.marker([s.lat, s.lon], { icon })
-				.bindPopup(popup, { maxWidth: 280 });
+	sklepy.forEach((s) => {
+		const popup = `
+		<div class="popup-inner">
+			<div class="popup-tag">// SKLEP TCG</div>
+			<div class="popup-name">${s.name}</div>
+			<div class="popup-divider"></div>
+			<div class="popup-address">
+				<strong>ADRES</strong>
+				${s.address}
+			</div>
+		</div>`;
 
-			marker.on("popupopen", () => marker.getElement().classList.add("marker-active"));
-			marker.on("popupclose", () => marker.getElement().classList.remove("marker-active"));
+		const marker = L.marker([s.lat, s.lon], { icon })
+			.bindPopup(popup, { maxWidth: 280 });
 
-			cluster.addLayer(marker);
+		markersById.set(String(s.id), marker);
+
+		marker.on("popupopen", () => {
+			const el = marker.getElement();
+			if (el) el.classList.add("marker-active");
+
+			window.location.hash = "sklep-" + s.id;
 		});
 
-		map.addLayer(cluster);
+		marker.on("popupclose", () => {
+			const el = marker.getElement();
+			if (el) el.classList.remove("marker-active");
 
-		document.getElementById("store-count").textContent =
-			sklepy.length + (sklepy.length === 1 ? " LOKALIZACJA" : " LOKALIZACJE");
+			history.replaceState(null, "", window.location.pathname);
+		});
+
+		cluster.addLayer(marker);
+	});
+
+	map.addLayer(cluster);
+
+	document.getElementById("store-count").textContent =
+		sklepy.length + (sklepy.length === 1 ? " LOKALIZACJA" : " LOKALIZACJE");
 }
- 
-	fetch("https://grid.arasaka.pl/getShops")
-		.then(r => r.json())
-		.then(sklepy => {
-			addMarkers(sklepy);
-			console.log(sklepy)
-		});
+
+fetch("https://grid.arasaka.pl/getShops")
+	.then(r => r.json())
+	.then(sklepy => {
+		addMarkers(sklepy);
+
+		const hash = window.location.hash;
+
+		if (hash.startsWith("#sklep-")) {
+			const id = hash.replace("#sklep-", "");
+			const marker = markersById.get(id);
+
+			if (marker && cluster) {
+				const latlng = marker.getLatLng();
+
+				map.setView(latlng, 14);
+
+				setTimeout(() => {
+					marker.openPopup();
+				}, 200);
+			}
+		}
+	});
 </script>
 </body>
 

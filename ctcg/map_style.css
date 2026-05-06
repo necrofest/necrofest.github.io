@@ -226,16 +226,17 @@ body::after {
 	color: var(--neon-yellow);
 	font-family: 'Orbitron', sans-serif;
 	font-size: 0.75rem;
-	border: 1px solid var(--neon-yellow);
+	border: 2px solid var(--neon-yellow);
 	box-shadow: 0 0 8px #f5e64260;
 }
 
 .marker-cluster {
-	background-color: transparent;
+	/* background-color: transparent; */
+	background-color: #f5e64220;
+	filter: drop-shadow(0 0 5px #f5e64299) drop-shadow(0 0 10px #f5e64255);
 }
 
-.marker-cluster-small,
-.marker-cluster-medium,
-.marker-cluster-large {
-	background-color: #f5e64220;
+.marker-cluster:hover {
+	filter: drop-shadow(0 0 6px #00f5ffcc) drop-shadow(0 0 12px #00f5ff88) sepia(1) saturate(10) hue-rotate(160deg);
+	transition: filter 0.2s;
 }
